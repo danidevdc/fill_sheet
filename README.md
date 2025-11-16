@@ -10,6 +10,7 @@ Aplicación web responsive para capturar datos mediante un formulario y guardarl
 - ✅ Interfaz moderna y atractiva
 - ✅ Campos en español
 - ✅ Feedback visual al usuario
+- ✅ Despliegue gratuito en GitHub Pages
 
 ## 📋 Campos del Formulario
 
@@ -21,116 +22,142 @@ Aplicación web responsive para capturar datos mediante un formulario y guardarl
 6. **Comentarios** (opcional)
 7. **Fecha** (se agrega automáticamente)
 
-## 🚀 Instalación y Configuración
+---
 
-### Paso 1: Instalar dependencias
+## 🚀 Opciones de Despliegue
+
+Esta aplicación puede desplegarse de dos formas:
+
+### ⭐ Opción 1: GitHub Pages (RECOMENDADO - Gratis)
+
+Despliegue completamente gratuito usando GitHub Pages y Google Apps Script.
+
+**👉 [Ver guía completa de despliegue en GitHub Pages](DEPLOYMENT.md)**
+
+**Ventajas:**
+- ✅ Completamente gratis
+- ✅ No necesitas servidor
+- ✅ Fácil de configurar
+- ✅ URL pública para compartir
+- ✅ Actualización automática con git push
+
+**Resumen rápido:**
+1. Configurar Google Apps Script (copiar código del archivo `google-apps-script.js`)
+2. Editar `config.js` con tu URL de Apps Script
+3. Activar GitHub Pages en la configuración del repositorio
+4. ¡Listo! Tu formulario estará en `https://[tu-usuario].github.io/[tu-repo]/`
+
+---
+
+### Opción 2: Servidor Local con Node.js
+
+Para desarrollo local o si prefieres usar tu propio servidor.
+
+<details>
+<summary>Clic para ver instrucciones de despliegue local</summary>
+
+#### Requisitos
+- Node.js instalado
+- Cuenta de Google Cloud con Google Sheets API habilitada
+
+#### Instalación
 
 ```bash
 npm install
 ```
 
-### Paso 2: Configurar Google Sheets API
-
-#### 2.1 Crear un proyecto en Google Cloud
+#### Configuración de Google Sheets API
 
 1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nuevo proyecto o selecciona uno existente
-3. Dale un nombre como "Formulario Sheets"
+2. Crea un nuevo proyecto
+3. Habilita **Google Sheets API**
+4. Crea una **cuenta de servicio** con rol de Editor
+5. Descarga el archivo JSON de credenciales
+6. Comparte tu Google Sheet con el email de la cuenta de servicio
 
-#### 2.2 Habilitar Google Sheets API
+#### Variables de Entorno
 
-1. En el menú lateral, ve a **APIs y servicios** > **Biblioteca**
-2. Busca "Google Sheets API"
-3. Haz clic en **Habilitar**
-
-#### 2.3 Crear una cuenta de servicio
-
-1. Ve a **APIs y servicios** > **Credenciales**
-2. Haz clic en **Crear credenciales** > **Cuenta de servicio**
-3. Completa los detalles:
-   - Nombre: `formulario-sheets-service`
-   - Descripción: `Servicio para guardar datos del formulario`
-4. Haz clic en **Crear y continuar**
-5. Asigna el rol **Editor** (o un rol personalizado con permisos de Sheets)
-6. Haz clic en **Continuar** y luego **Listo**
-
-#### 2.4 Generar clave JSON
-
-1. En la lista de cuentas de servicio, haz clic en la cuenta que acabas de crear
-2. Ve a la pestaña **Claves**
-3. Haz clic en **Agregar clave** > **Crear clave nueva**
-4. Selecciona **JSON** y haz clic en **Crear**
-5. Se descargará un archivo JSON con las credenciales (guárdalo de forma segura)
-
-#### 2.5 Compartir tu Google Sheet
-
-1. Abre el archivo JSON descargado y copia el valor de `client_email` (algo como `nombre@proyecto.iam.gserviceaccount.com`)
-2. Abre tu Google Sheet: https://docs.google.com/spreadsheets/d/1VipkLQfBfirVC9MbBHAsMzDlD9rNsLiXOIAlKgwtDHA/edit
-3. Haz clic en **Compartir** (botón verde en la esquina superior derecha)
-4. Pega el email de la cuenta de servicio
-5. Asegúrate de darle permisos de **Editor**
-6. Haz clic en **Enviar**
-
-### Paso 3: Configurar variables de entorno
-
-1. Copia el archivo de ejemplo:
 ```bash
 cp .env.example .env
 ```
 
-2. Abre el archivo `.env` y configura las credenciales:
-   - Abre el archivo JSON de credenciales que descargaste
-   - Copia TODO el contenido del archivo JSON
-   - Pégalo en una sola línea en la variable `GOOGLE_CREDENTIALS` del archivo `.env`
-
-Ejemplo:
+Edita `.env` y pega las credenciales JSON en una sola línea:
 ```env
-PORT=3000
-GOOGLE_CREDENTIALS={"type":"service_account","project_id":"tu-proyecto-123456",...}
+GOOGLE_CREDENTIALS={"type":"service_account","project_id":"..."}
 ```
 
-**Importante:** El JSON debe estar en una sola línea, sin saltos de línea.
+#### Ejecución
 
-### Paso 4: Verificar el nombre de la hoja
-
-Por defecto, el código busca una hoja llamada **"Hoja 1"**. Si tu hoja de Google Sheets tiene otro nombre:
-
-1. Abre `server.js`
-2. Busca la línea:
-```javascript
-const SHEET_NAME = 'Hoja 1';
-```
-3. Cámbiala por el nombre real de tu hoja, por ejemplo:
-```javascript
-const SHEET_NAME = 'Registros';
-```
-
-## ▶️ Ejecución
-
-### Modo desarrollo (con auto-reload)
+**Modo desarrollo:**
 ```bash
 npm run dev
 ```
 
-### Modo producción
+**Modo producción:**
 ```bash
 npm start
 ```
 
-La aplicación estará disponible en: **http://localhost:3000**
+La aplicación estará en: **http://localhost:3000**
 
-## 📊 Estructura de Google Sheets
+</details>
 
-Al recibir el primer formulario, se crearán automáticamente los siguientes encabezados en tu hoja:
+---
 
-| Fecha | Nombre Completo | Correo Electrónico | Teléfono | Empresa/Organización | Ciudad | Comentarios |
-|-------|----------------|-------------------|----------|---------------------|--------|-------------|
+## 📂 Estructura del Proyecto
+
+```
+fill_sheet/
+├── index.html              # Formulario HTML
+├── styles.css              # Estilos responsive
+├── app.js                  # Lógica del frontend
+├── config.js               # Configuración (URL de Apps Script)
+├── google-apps-script.js   # Código para Google Apps Script
+├── server.js               # Servidor Node.js (opcional)
+├── package.json            # Dependencias Node.js
+├── .env.example            # Plantilla de variables de entorno
+├── .gitignore              # Archivos ignorados por Git
+├── README.md               # Este archivo
+└── DEPLOYMENT.md           # Guía de despliegue en GitHub Pages
+```
+
+---
+
+## 📊 Cómo Funciona
+
+### Con GitHub Pages (Opción 1)
+
+```
+Usuario llena formulario
+        ↓
+JavaScript envía datos
+        ↓
+Google Apps Script recibe datos
+        ↓
+Se guardan en Google Sheets
+```
+
+### Con Node.js (Opción 2)
+
+```
+Usuario llena formulario
+        ↓
+JavaScript envía datos al servidor
+        ↓
+Servidor Node.js procesa datos
+        ↓
+Google Sheets API guarda datos
+        ↓
+Se guardan en Google Sheets
+```
+
+---
 
 ## 🎨 Personalización
 
-### Cambiar colores del tema
+### Cambiar Colores
 
-Edita el archivo `styles.css` y modifica el gradiente en:
+Edita `styles.css` y modifica los gradientes:
 
 ```css
 body {
@@ -142,62 +169,92 @@ body {
 }
 ```
 
-### Agregar más campos
+### Agregar Más Campos
 
-1. **En `index.html`:** Agrega el campo en el formulario
+1. **En `index.html`:** Agrega el campo HTML
 2. **En `app.js`:** Agrega el campo al objeto `formData`
-3. **En `server.js`:**
-   - Actualiza los encabezados en el array de headers
-   - Agrega el campo al array `values`
+3. **En `google-apps-script.js`:** Actualiza los encabezados y la fila de datos
+
+### Cambiar el Nombre de la Hoja
+
+En `google-apps-script.js`, edita:
+```javascript
+const SHEET_NAME = 'Hoja 1'; // Cambia esto por tu nombre de hoja
+```
+
+---
+
+## 🔧 Solución de Problemas
+
+### Error: "URL no está configurada"
+
+- Edita `config.js` con tu URL de Google Apps Script
+- Asegúrate de hacer commit y push de los cambios
+- Si usas GitHub Pages, espera 1-2 minutos para que se actualice
+
+### Los datos no llegan a Google Sheets
+
+1. Verifica que la URL de Apps Script sea correcta
+2. Asegúrate de haber implementado el script como "Aplicación web"
+3. Verifica que el acceso sea "Cualquier usuario"
+4. Revisa los logs en Google Apps Script (Extensiones > Apps Script > Ejecuciones)
+
+### GitHub Pages no funciona
+
+- Verifica que el repositorio sea público
+- Espera 1-2 minutos después de activar Pages
+- Asegúrate de estar en la rama correcta
+
+---
 
 ## 🔒 Seguridad
 
-- ⚠️ **NUNCA** subas el archivo `.env` a GitHub
-- ⚠️ **NUNCA** compartas las credenciales JSON públicamente
-- ✅ El archivo `.gitignore` ya está configurado para proteger archivos sensibles
+- ⚠️ **NUNCA** subas el archivo `.env` a GitHub (solo para opción Node.js)
+- ⚠️ **NUNCA** compartas credenciales JSON públicamente
+- ✅ La URL de Google Apps Script es pública, pero solo permite agregar datos
+- ✅ Nadie puede leer o eliminar datos de tu hoja a través de la URL
 
-## 🐛 Solución de Problemas
-
-### Error: "Error de autenticación con Google Sheets"
-
-- Verifica que las credenciales en `.env` estén correctamente formateadas (JSON en una línea)
-- Asegúrate de haber compartido la hoja con el email de la cuenta de servicio
-- Verifica que Google Sheets API esté habilitada en tu proyecto
-
-### Error: "Cannot find module 'express'"
-
-Ejecuta:
-```bash
-npm install
-```
-
-### Los datos no se guardan en la hoja
-
-- Verifica el nombre de la hoja en `server.js` (variable `SHEET_NAME`)
-- Asegúrate de que la cuenta de servicio tenga permisos de **Editor**
-- Revisa los logs del servidor para ver mensajes de error
+---
 
 ## 📱 Capturas de Pantalla
 
-### Vista Desktop
-![Desktop](https://via.placeholder.com/800x600?text=Vista+Desktop)
+La aplicación es completamente responsive:
 
-### Vista Móvil
-![Móvil](https://via.placeholder.com/375x667?text=Vista+Móvil)
+- **Desktop:** Formulario centrado con buen espaciado
+- **Tablet:** Se adapta al ancho de pantalla
+- **Móvil:** Optimizado para pantallas pequeñas
+
+---
+
+## 🔄 Actualizar la Aplicación
+
+Para actualizar tu formulario en GitHub Pages:
+
+```bash
+# Haz tus cambios en los archivos
+git add .
+git commit -m "Descripción de los cambios"
+git push origin main
+```
+
+GitHub Pages se actualizará automáticamente en 1-2 minutos.
+
+---
 
 ## 📄 Licencia
 
 MIT
 
-## 👨‍💻 Soporte
+---
 
-Si tienes problemas con la configuración, verifica:
+## 🎯 Próximos Pasos
 
-1. Que todas las dependencias estén instaladas
-2. Que el archivo `.env` esté configurado correctamente
-3. Que la hoja de Google Sheets esté compartida con la cuenta de servicio
-4. Que Google Sheets API esté habilitada
+1. **Para despliegue en GitHub Pages:** Lee [DEPLOYMENT.md](DEPLOYMENT.md)
+2. **Personaliza** los colores y campos según tus necesidades
+3. **Comparte** la URL de tu formulario
 
 ---
 
 ¡Listo! Tu aplicación de formularios con Google Sheets está configurada. 🎉
+
+**URL del Google Sheet:** https://docs.google.com/spreadsheets/d/1VipkLQfBfirVC9MbBHAsMzDlD9rNsLiXOIAlKgwtDHA/edit

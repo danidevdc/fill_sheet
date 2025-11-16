@@ -41,31 +41,35 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
+    // Verificar que la URL de Apps Script esté configurada
+    if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL === 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI') {
+        showMessage('Error: La URL de Google Apps Script no está configurada. Por favor, revisa el archivo config.js', 'error');
+        return;
+    }
+
     try {
         // Mostrar spinner y deshabilitar botón
         setLoading(true);
         hideMessage();
 
-        // Enviar datos al servidor
-        const response = await fetch('/api/submit', {
+        // Enviar datos a Google Apps Script
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors', // Necesario para Google Apps Script
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData)
         });
 
-        const result = await response.json();
+        // Con mode: 'no-cors', no podemos leer la respuesta
+        // Asumimos que fue exitoso si no hay error
+        showMessage('¡Formulario enviado exitosamente! Gracias por tu registro.', 'success');
+        form.reset();
 
-        if (response.ok) {
-            showMessage('¡Formulario enviado exitosamente! Gracias por tu registro.', 'success');
-            form.reset();
-        } else {
-            showMessage(result.error || 'Error al enviar el formulario. Por favor, intenta de nuevo.', 'error');
-        }
     } catch (error) {
         console.error('Error:', error);
-        showMessage('Error de conexión. Por favor, verifica tu conexión a internet e intenta de nuevo.', 'error');
+        showMessage('Error al enviar el formulario. Por favor, intenta de nuevo.', 'error');
     } finally {
         setLoading(false);
     }
