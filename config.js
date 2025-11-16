@@ -10,6 +10,5 @@
 
 const CONFIG = {
     // URL de tu Google Apps Script
-    // Reemplaza esto con tu URL real después de implementar el script
-    APPS_SCRIPT_URL: 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI'
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwCMcigMMLB1ExPvHRiDtjY2sY5qjbVXw97slRXgFFr0ZCHBaHTEX_ohjkAJVybbgeG/exec'
 };
